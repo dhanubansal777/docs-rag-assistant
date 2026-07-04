@@ -55,6 +55,11 @@ app.post("/api/ask", async (req, res) => {
   } catch (err) {
     const durationMs = Date.now() - startTime;
     console.error(`[ASK ERROR] ${durationMs}ms | ${err.message}`);
+    if (err.isQuotaError) {
+      return res.status(503).json({
+        error: "The AI service has hit its usage limit for now. Please try again in a few minutes.",
+      });
+    }
     res.status(500).json({ error: "Something went wrong on the server" });
   }
 });

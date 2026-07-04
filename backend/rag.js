@@ -13,6 +13,12 @@ async function withRetry(fn, retries = 3, delayMs = 2000) {
     try {
       return await fn();
     } catch (err) {
+      if (err.message?.includes("RESOURCE_EXHAUSTED") || err.message?.includes("429")) {
+        // Quota errors won't resolve by retrying quickly — tag and fail fast so the
+        // caller can show a real "rate limited" message instead of a generic 500.
+        err.isQuotaError = true;
+        throw err;
+      }
       const transient =
         err.message?.includes("503") || err.message?.includes("UNAVAILABLE");
       if (transient && attempt < retries) {

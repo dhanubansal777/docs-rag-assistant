@@ -135,13 +135,16 @@ export default function App() {
         body: JSON.stringify({ question: trimmed, sessionId }),
       });
 
-      if (!res.ok) throw new Error("Server error");
-
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Server error");
+      }
+
       setAnswer(data.answer);
       setSources(data.sources || []);
-    } catch {
-      setAskError("Could not get an answer. Is the backend running on port 5000?");
+    } catch (err) {
+      setAskError(err.message || "Could not get an answer. Is the backend running?");
     } finally {
       setAsking(false);
     }
