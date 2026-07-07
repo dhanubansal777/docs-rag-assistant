@@ -21,6 +21,6 @@ CREATE INDEX IF NOT EXISTS idx_documents_session_id ON documents (session_id);
 CREATE INDEX IF NOT EXISTS idx_documents_content_tsv ON documents USING GIN (content_tsv);
 
 -- Approximate nearest-neighbor search on the embedding (cosine distance, matches `<=>` in retrieval.js).
--- Requires the table to already have some rows before it's useful; re-run ANALYZE documents; after a bulk ingest.
+-- HNSW builds incrementally as rows are inserted, unlike ivfflat, so no post-load ANALYZE/retrain step is needed.
 CREATE INDEX IF NOT EXISTS idx_documents_embedding
-  ON documents USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+  ON documents USING hnsw (embedding vector_cosine_ops);

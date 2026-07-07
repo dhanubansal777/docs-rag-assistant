@@ -49,7 +49,7 @@ app.post("/api/ask", async (req, res) => {
     const result = await answerQuestion(question, sessionId);
 
     const durationMs = Date.now() - startTime; // ← how long it took
-    console.log(`[ASK] "${question}" | ${durationMs}ms | tokens: ${result.tokens ?? "n/a"}`);
+  //  console.log(`[ASK] "${question}" | ${durationMs}ms | tokens: ${result.tokens ?? "n/a"}`);
 
     res.json(result);
   } catch (err) {
